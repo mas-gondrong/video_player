@@ -201,6 +201,21 @@
   <!-- Produk dari Firebase akan otomatis muncul di sini -->
 </div>
 
+  <!-- Fitur Pemutar Musik dari HP -->
+<div class="info-box" style="text-align: center; margin-top: 20px;">
+    <h3>🎵 Pemutar MP3 Lokal</h3>
+    <p>Pilih dan putar lagu langsung dari memori HP Anda</p>
+    
+    <!-- Tombol Pilih File -->
+    <input type="file" id="pilihAudio" accept="audio/mp3, audio/*" style="margin: 15px 0; padding: 10px; border: 1px dashed #0052cc; border-radius: 5px; width: 80%;">
+    
+    <!-- Judul Lagu Aktif -->
+    <p id="namaLagu" style="font-weight: bold; color: #333;">Belum ada lagu yang dipilih</p>
+    
+    <!-- Pemutar Audio Standar -->
+    <audio id="pemutar" controls style="width: 100%; max-width: 300px; margin-top: 10px;"></audio>
+</div>
+
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, collection, query, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
