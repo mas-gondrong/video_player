@@ -1,34 +1,315 @@
-<!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <title>Video Player</title>
-    <style>
-        video { display: block; margin-top: 20px; max-width: 100%; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mas Gondrong - Online Shopping</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0052cc">
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      margin: 0;
+      background-color: #f0f2f5; /* Warna abu-abu khas FB */
+      color: #1c1e21;
+    }
+
+    /* === HEADER HERO === */
+    .hero {
+      position: relative;
+      background-image: url('jembatan1.jpg');
+      background-size: cover;
+      background-position: center;
+      height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      padding: 20px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 1;
+    }
+    .hero .logo, .hero h1, .hero p {
+      position: relative;
+      z-index: 2;
+    }
+    .hero h1 { font-size: 42px; margin: 10px 0 5px; font-weight: 700; }
+    .hero p { font-size: 16px; margin: 2px 0; }
+    .hero .logo {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 3px solid white; object-fit: cover;
+    }
+
+    /* === INFO BOX (TAMBAH TEXT-ALIGN: CENTER) === */
+    .info-box {
+      background: white;
+      margin: 15px auto;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 800px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      line-height: 1.6;
+      text-align: center; /* INI MEMBUAT TEKS SELAMAT DATANG JADI TENGAH */
+    }
+    .info-box h3 { margin: 0 0 10px 0; color: #1877f2; font-size: 18px; }
+    .info-box p { margin: 5px 0; font-size: 14px; }
+
+    /* === GRID PRODUK (PAKSA 2 KOLOM DI HP) === */
+    .container {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr); /* PAKSA 2 KOLOM */
+      gap: 12px;
+      padding: 0 15px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    /* Jika dibuka di Tablet/PC, buat jadi 3 atau 4 kolom biar tidak terlalu besar */
+    @media (min-width: 600px) {
+      .container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (min-width: 800px) {
+      .container {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .product {
+      background: white;
+      border-radius: 0;
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      transition: box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .product:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* GAMBAR PRODUK */
+    .product-img-wrap {
+      position: relative;
+      width: 100%;
+      padding-top: 100%; /* Rasio kotak 1:1 */
+      overflow: hidden;
+    }
+    .product-img-wrap img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      cursor: zoom-in;
+    }
+
+    /* INFO DI BAWAH GAMBAR */
+    .product-info {
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      text-align: left; /* Teks di dalam kartu produk rata kiri */
+    }
+    .product h3 {
+      margin: 0 0 4px 0;
+      font-size: 15px;
+      color: #1c1e21;
+      line-height: 1.3;
+    }
+    .product p {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #65676b;
+    }
+    
+    /* === MODAL & LIGHTBOX === */
+    .modal, .lightbox {
+      display: none;
+      position: fixed;
+      z-index: 9999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(255,255,255,0.9);
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .modal-content {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+    .modal-content h4 {
+      margin-top: 0;
+      color: #1877f2;
+      text-align: center;
+      font-size: 18px;
+    }
+    
+    .lightbox img { max-width: 95%; max-height: 95%; object-fit: contain; }
+    .lightbox .close-lightbox {
+      position: absolute; top: 20px; right: 30px;
+      color: #1c1e21; font-size: 40px; cursor: pointer;
+    }
+
+    /* === RESPONSIF HP === */
+    @media (max-width: 480px) {
+      .hero { height: 220px; }
+      .hero h1 { font-size: 32px; }
+      .hero p { font-size: 14px; }
+      .hero .logo { width: 65px; height: 65px; }
+    }
+</style>
 </head>
+  
 <body>
-    <h1>Video Saya</h1>
-    <input type="file" id="videoUploader" accept="video/*">
+  
+ <header class="hero">
+  <img src="masgondronglogo.jpg" alt="Mas Gondrong" class="logo">
+  <h1>MAS GONDRONG</h1>
+  <p>Online Shopping</p>
+  <p>WELCOME TO BATAM</p>
+  </header>
 
-    <!-- Gunakan src langsung pada tag video -->
-    <video id="videoPlayer" controls src="celanatraining.mp4" width="640">
-        Browser Anda tidak mendukung video.
-    </video>
+<div class="info-box">
+  <h3>Selamat Datang di MAS GONDRONG Online Shopping</h3>
+  <p><strong>Belanja online tanpa ribet dengan harga terbaik</strong></p>
+  <p><strong>Pengantaran sampai ke alamat tujuan</strong></p>
+  <p><strong>!Se-Kota-Batam!</strong></p>
+  <p style="margin-top: 12px;"><strong>Cara Order Gampang:</strong></p>
+  <p>1. Klik Foto untuk melihat detail produk</p>
+  <p>3. Klik "Pesan via WhatsApp" untuk Membeli</p>
+  <h3>Selamat-Ber-Belanja</h3>
+</div>
 
-    <script>
-        const videoUploader = document.getElementById('videoUploader');
-        const videoPlayer = document.getElementById('videoPlayer');
+<div class="container" id="produk-container">
+  <!-- Produk dari Firebase akan otomatis muncul di sini -->
+</div>
 
-        videoUploader.addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (file) {
-                const fileURL = URL.createObjectURL(file);
-                // Mengganti src video yang sedang diputar
-                videoPlayer.src = fileURL; 
-                videoPlayer.play();
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, collection, query, onSnapshot, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js";
+
+    // === KONFIGURASI FIREBASE ===
+    const firebaseConfig = {
+      apiKey: "AIzaSyCtzYShY70eQGLNUnoQCi91uy7aMuFsYsc",
+      authDomain: "mas-gondrong.firebaseapp.com",
+      projectId: "mas-gondrong",
+      storageBucket: "mas-gondrong.firebasestorage.app",
+      messagingSenderId: "191854522046",
+      appId: "1:191854522046:web:61bed6d89182392044b8ef"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    
+    // 1. MESIN BACA PRODUK
+    const db = getFirestore(app);
+    
+        // 2. MESIN NOTIFIKASI
+    const messaging = getMessaging(app);
+    // GANTI DENGAN VAPID KEY ASLI DARI FIREBASE BOS
+    const vapidKey = "BOX3hOccp6xEzMKiii-TRsrgTa3v4NC-tt3PEq0mZlqsD4yIoxHEJun29yoYenZw6iQDv13dYlPA4_O5dYhaLyo"; 
+
+    function requestNotificationPermission() {
+      Notification.requestPermission().then((permission) => {
+        if (permission === 'granted') {
+          console.log('Izin notifikasi diberikan!');
+          getToken(messaging, { vapidKey: vapidKey }).then((currentToken) => {
+            if (currentToken) {
+              console.log('Token HP:', currentToken);
+              
+              // INI KODE WAJIB BUAT SIMPAN TOKEN KE FIREBASE!
+              addDoc(collection(db, "tokens"), {
+                token: currentToken,
+                createdAt: new Date()
+              }).then(() => {
+                console.log('Token berhasil disimpan ke database!');
+              }).catch((err) => {
+                console.log('Gagal simpan token:', err);
+              });
+
             }
-        });
+          }).catch((err) => {
+            console.log('Gagal ambil token', err);
+          });
+        } else {
+          console.log('Izin notifikasi ditolak.');
+        }
+      });
+    }
+
+    // Jalankan minta izin notifikasi (CUMA SEKALI)
+    requestNotificationPermission();
+
+    // Dengerin notifikasi saat pembeli lagi buka web (CUMA SEKALI)
+    onMessage(messaging, (payload) => {
+      console.log('Notifikasi masuk:', payload);
+      alert("🔔 " + payload.notification.title + "\n" + payload.notification.body);
+    });
+      
+    // 3. FUNGSI BACA PRODUK & TAMPILKAN KE ETALASE (CUMA SEKALI)
+    const produkContainer = document.getElementById('produk-container');
+    const q = query(collection(db, "products"));
+    
+    onSnapshot(q, (snapshot) => {
+      produkContainer.innerHTML = ''; 
+      snapshot.forEach((doc) => {
+        const p = doc.data();
+        const id = doc.id;
+        
+        // Ambil foto pertama dari kumpulan foto
+        let mainImage = '';
+        if (Array.isArray(p.gambar)) {
+          mainImage = p.gambar[0];
+        } else if (typeof p.gambar === 'string') {
+          mainImage = p.gambar.split(' ')[0];
+        }
+
+        produkContainer.innerHTML += `
+          <div class="product">
+            <a href="produk.html?id=${id}" style="text-decoration:none; color:inherit;">
+              <div class="product-img-wrap">
+                <img src="${mainImage}" alt="${p.nama}" style="cursor:pointer;">
+              </div>
+              <div class="product-info">
+                <h3>${p.nama}</h3>
+                <p><strong>Harga: ${p.harga}</strong></p>
+              </div>
+            </a>
+          </div>
+        `;
+      });
+    });
+  </script>
+   
+    <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('PWA Siap diinstall!'))
+        .catch(err => console.log('Gagal daftar SW', err));
+    }
     </script>
+    <!-- PINTU RAHASIA ADMIN (Dicamouflage) -->
+  <div style="text-align: center; padding: 20px 0; background: #f0f2f5;">
+    <a href="admin.html" style="color: #ccc; font-size: 10px; text-decoration: none; opacity: 0.3;">
+      ⚙️ Admin Panel
+    </a>
+  </div>
 </body>
 </html>
