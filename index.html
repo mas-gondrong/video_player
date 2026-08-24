@@ -201,33 +201,35 @@
   <!-- Produk dari Firebase akan otomatis muncul di sini -->
 </div>
 
-  <!-- Fitur Pemutar Musik Modern dari HP -->
+  <!-- Fitur Pemutar Musik Multi-Lagu dari HP -->
 <div class="info-box" style="text-align: center; margin: 30px auto; max-width: 400px; padding: 25px; background: #ffffff; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
     <h3 style="color: #0052cc; margin-bottom: 5px;">🎵 Pemutar MP3 Lokal</h3>
-    <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Putar musik favorit dari memori HP Anda</p>
+    <p style="color: #666; font-size: 13px; margin-bottom: 20px;">Pilih banyak lagu sekaligus dari memori HP Anda</p>
     
-    <!-- Area Custom Input File (Lebih Modern) -->
+    <!-- Area Input File (Sekarang Mendukung Banyak File / Multiple) -->
     <label for="pilihAudio" style="display: inline-block; padding: 12px 20px; background: #e6f0ff; color: #0052cc; font-weight: bold; border-radius: 30px; cursor: pointer; transition: 0.3s; font-size: 14px; border: 1px solid #b3d1ff;">
-        📂 Pilih Lagu dari HP
+        📂 Pilih Banyak Lagu (MP3)
     </label>
-    <input type="file" id="pilihAudio" accept="audio/mp3, audio/*" style="display: none;">
+    <!-- Tambahan atribut 'multiple' di bawah ini -->
+    <input type="file" id="pilihAudio" accept="audio/mp3, audio/*" multiple style="display: none;">
     
-    <!-- Judul Lagu Aktif -->
-    <div style="margin: 20px 0 10px 0; min-height: 40px;">
+    <!-- Judul Lagu Aktif & Status Antrean -->
+    <div style="margin: 20px 0 10px 0; min-height: 50px;">
         <p id="namaLagu" style="font-weight: 600; color: #333; font-size: 15px; margin: 0; padding: 0 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Belum ada lagu yang dipilih</p>
+        <small id="statusAntrean" style="color: #888; font-size: 12px; display: block; margin-top: 5px;"></small>
     </div>
     
-    <!-- Audio Tag (Disembunyikan karena kita pakai kontrol kustom) -->
+    <!-- Audio Tag Tersembunyi -->
     <audio id="pemutar"></audio>
 
     <!-- Kontrol Kustom -->
     <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 10px;">
-        <!-- Tombol Play/Pause Bulat -->
-        <button id="tombolPlay" style="width: 55px; height: 55px; border-radius: 50%; background: #0052cc; border: none; color: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 82, 204, 0.3); transition: 0.2s;">
+        <!-- Tombol Play/Pause -->
+        <button id="tombolPlay" style="width: 55px; height: 55px; border-radius: 50%; background: #0052cc; border: none; color: white; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 82, 204, 0.3);">
             ▶
         </button>
         
-        <!-- Progress Bar Pengatur Durasi -->
+        <!-- Progress Bar -->
         <input type="range" id="progressBar" value="0" max="100" style="width: 60%; accent-color: #0052cc; cursor: pointer;">
     </div>
 </div>
@@ -341,23 +343,57 @@
     const inputAudio = document.getElementById('pilihAudio');
     const pemutar = document.getElementById('pemutar');
     const namaLagu = document.getElementById('namaLagu');
+    const statusAntrean = document.getElementById('statusAntrean');
     const tombolPlay = document.getElementById('tombolPlay');
     const progressBar = document.getElementById('progressBar');
 
-    // Membaca file saat pengguna memilih musik dari galeri HP
-    inputAudio.addEventListener('change', function(event) {
-        const file = event.target.files[0]; 
-        if (file) {
-            const urlFile = URL.createObjectURL(file); 
-            pemutar.src = urlFile; 
-            namaLagu.innerText = file.name; 
+    let daftarLagu = []; // Tempat menyimpan daftar file MP3 yang dipilih
+    let indeksSekarang = 0; // Menandai lagu keberapa yang sedang diputar
+
+    // Fungsi untuk memutar lagu berdasarkan nomor indeks
+    function putarLaguKe(indeks) {
+        if (daftarLagu.length > 0 && indeks < daftarLagu.length) {
+            const file = daftarLagu[indeks];
+            const urlFile = URL.createObjectURL(file);
+            
+            pemutar.src = urlFile;
+            namaLagu.innerText = file.name;
+            statusAntrean.innerText = `Lagu ${indeks + 1} dari ${daftarLagu.length}`;
+            
             pemutar.play();
-            tombolPlay.innerText = "⏸"; // Berubah jadi pause saat berputar
+            tombolPlay.innerText = "⏸";
+        }
+    }
+
+    // Mendengarkan saat pengguna selesai memilih banyak file di HP
+    inputAudio.addEventListener('change', function(event) {
+        const files = event.target.files;
+        
+        if (files.length > 0) {
+            daftarLagu = Array.from(files); // Masukkan semua file pilihan ke dalam array
+            indeksSekarang = 0; // Reset ke lagu pertama
+            putarLaguKe(indeksSekarang); // Mulai putar lagu pertama
         }
     });
 
-    // Fungsi Klik Tombol Play/Pause
+    // Otomatis pindah ke lagu berikutnya ATAU ulang ke awal jika lagu habis
+    pemutar.addEventListener('ended', function() {
+        indeksSekarang++; // Naikkan indeks ke lagu berikutnya
+        
+        if (indeksSekarang < daftarLagu.length) {
+            // Jika masih ada lagu di antrean, putar lagu berikutnya
+            putarLaguKe(indeksSekarang);
+        } else {
+            // JIKA SEMUA LAGU HABIS -> Otomatis kembali ke lagu pertama (Looping Playlist)
+            indeksSekarang = 0;
+            putarLaguKe(indeksSekarang);
+        }
+    });
+
+    // Fungsi Klik Tombol Play/Pause Manual
     tombolPlay.addEventListener('click', function() {
+        if (daftarLagu.length === 0) return; // Abaikan jika belum ada lagu
+        
         if (pemutar.paused) {
             pemutar.play();
             tombolPlay.innerText = "⏸";
@@ -367,7 +403,7 @@
         }
     });
 
-    // Update Progress Bar mengikuti durasi lagu berjalan
+    // Update Progress Bar
     pemutar.addEventListener('timeupdate', function() {
         if (pemutar.duration) {
             const posisi = (pemutar.currentTime / pemutar.duration) * 100;
@@ -375,7 +411,7 @@
         }
     });
 
-    // Geser Progress Bar untuk mempercepat/mengulang lagu
+    // Geser Progress Bar manual
     progressBar.addEventListener('input', function() {
         if (pemutar.duration) {
             const waktuBaru = (progressBar.value / 100) * pemutar.duration;
