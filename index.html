@@ -201,6 +201,24 @@
   <!-- Produk dari Firebase akan otomatis muncul di sini -->
 </div>
 
+<!-- VIDEO IKLAN PRODUK BAWAAN TOKO -->
+<div class="product" style="text-align: center; padding: 15px;">
+  <!-- Input tersembunyi khusus untuk video iklan -->
+  <input type="file" id="video-uploader" accept="video/*" onchange="gantiVideoIklan(event)" style="display: none;">
+  
+  <div class="product-img-wrap" style="margin-bottom: 10px;">
+    <!-- Gambar sampul video iklan. Klik untuk memutar video bawaan toko -->
+    <img id="sampulIklan" src="iklan.jpg" alt="Iklan Produk" onclick="putarVideoBawaanToko()" style="cursor: pointer; border-radius: 10px; max-width: 100%;">
+  </div>
+  <h3>Klik Video☝️ Iklan Produk</h3>
+</div>
+
+<!-- Tempat Munculnya Video Iklan Bawaan (Awalnya tersembunyi) -->
+<div id="videoIklanContainer" style="display:none; text-align:center; margin:10px 0;">
+  <video id="videoIklanPlayer" controls playsinline style="width:100%; border-radius:10px;"></video>
+  <button onclick="tutupVideoIklan()" style="margin-top:5px; background:red; color:white; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Tutup Iklan</button>
+</div>
+
   <!-- Fitur Pemutar Musik Multi-Lagu RGB dari HP -->
 <!-- ID 'kotakMusik' ditambahkan untuk efek RGB lewat JavaScript nanti -->
 <div id="kotakMusik" class="info-box" style="text-align: center; margin: 30px auto; max-width: 400px; padding: 25px; background: rgba(0,0,0,0.1); border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); transition: all 0.5s ease; border: 3px solid transparent;">
