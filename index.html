@@ -383,6 +383,34 @@
     }
     </script>
 
+// KODE VIDEO IKLAN BAWAAN TOKO
+  <script>
+function gantiVideoIklan(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const player = document.getElementById('videoIklanPlayer');
+  player.src = url;
+  document.getElementById('videoIklanContainer').style.display = 'block';
+  player.play();
+}
+
+// Memutar video bawaan (misal: file di folder website kamu)
+function putarVideoBawaanToko() {
+  const player = document.getElementById('videoIklanPlayer');
+  // GANTI 'video-iklan.mp4' dengan nama file video iklanmu yang di-upload di GitHub
+  player.src = 'handgripproduk1.mp4'; 
+  document.getElementById('videoIklanContainer').style.display = 'block';
+  player.play().catch(() => {});
+}
+
+function tutupVideoIklan() {
+  const player = document.getElementById('videoIklanPlayer');
+  player.pause();
+  document.getElementById('videoIklanContainer').style.display = 'none';
+}
+  </script>
+
 <script>
     const inputAudio = document.getElementById('pilihAudio');
     const pemutar = document.getElementById('pemutar');
