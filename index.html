@@ -3,25 +3,29 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>YouTube Video Fullscreen with Sound Toggle</title>
+  <title>YouTube Video with Box</title>
   <style>
-    html, body {
-      margin: 0; padding: 0; height: 100%; overflow: hidden;
+    body, html {
+      margin: 0; padding: 0; height: 100%;
+      background: #eee;
     }
     #player {
       position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: -1;
+      top: 20px;
+      left: 20px;
+      width: 320px;
+      height: 180px;
+      border: 3px solid #333;
+      border-radius: 10px;
+      background-color: black;
+      z-index: 9999;
     }
     #sound-toggle {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 10;
-      background: rgba(0,0,0,0.5);
+      top: 220px;
+      left: 20px;
+      z-index: 10000;
+      background: rgba(0,0,0,0.7);
       color: white;
       border: none;
       padding: 10px 15px;
@@ -29,7 +33,6 @@
       border-radius: 5px;
       cursor: pointer;
       user-select: none;
-      pointer-events: auto;
     }
   </style>
 </head>
@@ -42,13 +45,13 @@
     let player;
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
-        videoId: '55755', // Ganti dengan ID video YouTube kamu
+        videoId: 'dQw4w9WgXcQ', // Ganti dengan video ID yang valid
         playerVars: {
           autoplay: 1,
           controls: 0,
           modestbranding: 1,
           loop: 1,
-          playlist: '55755', // loop butuh playlist sama dengan videoId
+          playlist: 'dQw4w9WgXcQ',
           mute: 1,
           rel: 0,
           playsinline: 1
@@ -61,7 +64,6 @@
       });
     }
 
-    // Load YouTube IFrame API script dengan URL yang benar
     let tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     document.body.appendChild(tag);
