@@ -13,7 +13,7 @@
       top: 0; left: 0;
       width: 100vw;
       height: 100vh;
-      pointer-events: none; /* agar video tidak mengganggu klik kecuali tombol */
+      pointer-events: none;
       z-index: -1;
     }
     #sound-toggle {
@@ -29,7 +29,7 @@
       border-radius: 5px;
       cursor: pointer;
       user-select: none;
-      pointer-events: auto; /* agar tombol bisa diklik */
+      pointer-events: auto;
     }
   </style>
 </head>
@@ -61,9 +61,9 @@
       });
     }
 
-    // Load YouTube IFrame API script
+    // Load YouTube IFrame API script dengan URL yang benar
     let tag = document.createElement('script');
-    tag.src = "https://youtu.be/YQ8qcoGEg4k?si=Y0jQ6X30MiWOJPlR";
+    tag.src = "https://www.youtube.com/iframe_api";
     document.body.appendChild(tag);
 
     const btn = document.getElementById('sound-toggle');
