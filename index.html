@@ -174,17 +174,30 @@
       .hero p { font-size: 14px; }
       .hero .logo { width: 65px; height: 65px; }
     }
-
-    /* Contoh styling agar video kecil dan tidak mengganggu */
-    #animation-video {
-      width: 200px; /* ukuran video bisa disesuaikan */
-      height: auto;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    
+    /* Contoh styling agar video tetap di body dan tidak mengganggu */
+    #player {
       position: fixed;
-      bottom: 20px;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none; /* agar video tidak mengganggu klik kecuali tombol */
+      z-index: -1;
+    }
+    #sound-toggle {
+      position: fixed;
+      top: 20px;
       right: 20px;
-      z-index: 1000;
+      z-index: 10;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      user-select: none;
+      pointer-events: auto; /* agar tombol bisa diklik */
     }
 </style>
 </head>
@@ -280,6 +293,10 @@
             ⏭
         </button>
     </div>
+
+  <div id="player"></div>
+  <button id="sound-toggle">Unmute</button>
+</div>
 
     <!-- Progress Bar -->
     <div style="display: flex; justify-content: center; width: 100%;">
@@ -532,6 +549,45 @@ function tutupVideoIklan() {
             const waktuBaru = (progressBar.value / 100) * pemutar.duration;
             pemutar.currentTime = waktuBaru;
         }
+    });
+  </script>
+  <script>
+    let player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: 'VIDEO_ID', // Ganti dengan ID video YouTube kamu
+        playerVars: {
+          autoplay: 1,
+          controls: 0,
+          modestbranding: 1,
+          loop: 1,
+          playlist: 'VIDEO_ID', // loop butuh playlist sama dengan videoId
+          mute: 1,
+          rel: 0,
+          playsinline: 1
+        },
+        events: {
+          onReady: (event) => {
+            event.target.playVideo();
+          }
+        }
+      });
+    }
+
+    // Load YouTube IFrame API script
+    let tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    document.body.appendChild(tag);
+
+    const btn = document.getElementById('sound-toggle');
+    btn.addEventListener('click', () => {
+      if (player.isMuted()) {
+        player.unMute();
+        btn.textContent = 'Mute';
+      } else {
+        player.mute();
+        btn.textContent = 'Unmute';
+      }
     });
   </script>
   
