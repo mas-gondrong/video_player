@@ -555,13 +555,13 @@ function tutupVideoIklan() {
     let player;
     function onYouTubeIframeAPIReady() {
       player = new YT.Player('player', {
-        videoId: 'VIDEO_ID', // Ganti dengan ID video YouTube kamu
+        videoId: 'YQ8qcoGEg4k', // Ganti dengan ID video YouTube kamu
         playerVars: {
           autoplay: 1,
           controls: 0,
           modestbranding: 1,
           loop: 1,
-          playlist: 'VIDEO_ID', // loop butuh playlist sama dengan videoId
+          playlist: 'YQ8qcoGEg4k', // loop butuh playlist sama dengan videoId
           mute: 1,
           rel: 0,
           playsinline: 1
@@ -576,7 +576,7 @@ function tutupVideoIklan() {
 
     // Load YouTube IFrame API script
     let tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
+    tag.src = "https://youtu.be/YQ8qcoGEg4k?si=_tBlz3rw0MLpPVPD";
     document.body.appendChild(tag);
 
     const btn = document.getElementById('sound-toggle');
