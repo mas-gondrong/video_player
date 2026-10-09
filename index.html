@@ -2,25 +2,33 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <title>Embed Video YouTube Rapi</title>
+  <title>Video dengan Border Animasi</title>
   <style>
-    /* Container untuk video dan tombol */
+    /* Container video dan tombol */
     #player-container {
       max-width: 640px;
       margin: 20px auto;
       display: flex;
-      flex-direction: column; /* tombol di bawah video */
+      flex-direction: column;
       align-items: center;
       gap: 10px;
+      /* Border animasi 4 warna */
+      border: 4px solid;
+      border-radius: 20px; /* Sudut melengkung */
+      padding: 5px;
+      animation: borderGlow 4s linear infinite;
     }
 
+    /* Video player */
     #player {
       width: 100%;
       height: 360px;
-      border-radius: 8px;
+      border-radius: 16px; /* Sudut melengkung video */
       background: black;
+      overflow: hidden;
     }
 
+    /* Tombol */
     #sound-toggle {
       padding: 10px 20px;
       cursor: pointer;
@@ -28,12 +36,31 @@
       border: none;
       background-color: #444;
       color: white;
-      border-radius: 6px;
+      border-radius: 12px; /* Sudut melengkung tombol */
       transition: background-color 0.3s ease;
     }
 
     #sound-toggle:hover {
       background-color: #666;
+    }
+
+    /* Animasi border 4 warna bergantian */
+    @keyframes borderGlow {
+      0% {
+        border-color: red;
+      }
+      25% {
+        border-color: orange;
+      }
+      50% {
+        border-color: yellow;
+      }
+      75% {
+        border-color: green;
+      }
+      100% {
+        border-color: red;
+      }
     }
   </style>
 </head>
